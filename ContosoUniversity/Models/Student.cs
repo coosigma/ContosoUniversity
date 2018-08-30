@@ -7,6 +7,7 @@ namespace ContosoUniversity.Models
 {
     public class Student
     {
+        public string PathOfFile { get; set; }
         public int ID { get; set; }
         //[RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
         [StringLength(50, MinimumLength = 1)]

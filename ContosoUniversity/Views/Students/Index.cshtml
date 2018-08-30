@@ -21,6 +21,9 @@
     <thead>
         <tr>
             <th>
+                Image
+            </th>
+            <th>
                 @*@Html.DisplayNameFor(model => model.LastName)*@
                 @*<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.LastName)</a>*@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last Name</a>
@@ -40,7 +43,13 @@
     <tbody>
         @foreach (var item in Model)
         {
+            var imgUrl = @Href("~" + item.PathOfFile);
+            var errImg = @Href("~/images/Unitec.jpg");
             <tr>
+                <td>
+                     <img style="width: 250px; height: auto;" src="@imgUrl" alt="Student Image" onerror="this.onerror = null; this.src = '@errImg'">
+                </td>
+
                 <td>
                     @Html.DisplayFor(modelItem => item.LastName)
                 </td>
