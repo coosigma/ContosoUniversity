@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +10,6 @@ using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 using ContosoUniversity.Services;
 
-
 namespace ContosoUniversity
 {
     public class Startup
@@ -21,7 +18,6 @@ namespace ContosoUniversity
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -52,7 +48,8 @@ namespace ContosoUniversity
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env,
+            IServiceProvider serviceProvider, UserManager<ApplicationUser> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -75,6 +72,56 @@ namespace ContosoUniversity
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            await CreateRoles(serviceProvider);
+        }
+        public async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                //create database schema if none exists
+                var apContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                apContext.Database.EnsureCreated();
+
+                //If there is already an Administrator role, abort
+                var _roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+                //var _userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+
+                string[] roleNames = { "Admin", "Member" };
+                IdentityResult roleResult;
+
+                foreach (var roleName in roleNames)
+                {
+
+                    bool roleExist = _roleManager.RoleExistsAsync(roleName).Result;
+                    if (!roleExist)
+                    {
+                        roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+                    }
+
+                }
+
+                var poweruser = new ApplicationUser
+                {
+                    UserName = Configuration.GetSection("UserSettings")["UserEmail"],
+                    Email = Configuration.GetSection("UserSettings")["UserEmail"],
+                    Address = "Addmin Address",
+                    Enabled = true,
+                };
+                var _userManager = serviceScope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
+                var test = _userManager.FindByEmailAsync(Configuration.GetSection("UserSettings")["UserEmail"]);
+                if (test.Result == null)
+                {
+                    string UserPassword = Configuration.GetSection("UserSettings")["UserPassword"];
+                    poweruser.EmailConfirmed = true;
+                    var createPowerUser = await _userManager.CreateAsync(poweruser, UserPassword);
+                    if (createPowerUser.Succeeded)
+                    {
+                        //here we tie the new user to the "Admin" role 
+                        await _userManager.AddToRoleAsync(poweruser, "Admin");
+                    }
+                }
+            }
+
         }
     }
 }
