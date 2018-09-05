@@ -19,7 +19,7 @@ namespace ContosoUniversity.Models.ManageViewModels
         [Phone]
         [Display(Name = "Phone number")]
         public string PhoneNumber { get; set; }
-
+        public string Address { get; set; }
         public string StatusMessage { get; set; }
     }
 }

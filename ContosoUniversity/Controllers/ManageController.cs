@@ -60,7 +60,8 @@ namespace ContosoUniversity.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
-                StatusMessage = StatusMessage
+                StatusMessage = StatusMessage,
+                Address = user.Address,
             };
 
             return View(model);
