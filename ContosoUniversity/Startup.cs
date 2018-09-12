@@ -45,12 +45,20 @@ namespace ContosoUniversity
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromMinutes(5);
+                options.Cookie.HttpOnly = true;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public async void Configure(IApplicationBuilder app, IHostingEnvironment env,
             IServiceProvider serviceProvider, UserManager<ApplicationUser> userManager)
         {
+            app.UseSession();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

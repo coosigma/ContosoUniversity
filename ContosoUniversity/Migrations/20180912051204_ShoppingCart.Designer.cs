@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace ContosoUniversity.Data.Migrations
+namespace ContosoUniversity.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180912051204_ShoppingCart")]
+    partial class ShoppingCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,6 +37,8 @@ namespace ContosoUniversity.Data.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("Enabled");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -71,6 +74,108 @@ namespace ContosoUniversity.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("ContosoUniversity.Models.CartItem", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CartID");
+
+                    b.Property<int>("Count");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<int?>("TutorialID");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("TutorialID");
+
+                    b.ToTable("CartItem");
+                });
+
+            modelBuilder.Entity("ContosoUniversity.Models.Order", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("City");
+
+                    b.Property<string>("Country");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<DateTime>("OrderDate");
+
+                    b.Property<string>("Phone");
+
+                    b.Property<string>("PostalCode");
+
+                    b.Property<string>("State");
+
+                    b.Property<decimal>("Total");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("OrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("ContosoUniversity.Models.OrderDetail", b =>
+                {
+                    b.Property<int>("OrderDetailId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("OrderId");
+
+                    b.Property<int>("Quantity");
+
+                    b.Property<int?>("TutorialID");
+
+                    b.Property<decimal>("UnitPrice");
+
+                    b.HasKey("OrderDetailId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("TutorialID");
+
+                    b.ToTable("OrderDetail");
+                });
+
+            modelBuilder.Entity("ContosoUniversity.Models.ShoppingCart", b =>
+                {
+                    b.Property<string>("ShoppingCartId")
+                        .ValueGeneratedOnAdd();
+
+                    b.HasKey("ShoppingCartId");
+
+                    b.ToTable("ShoppingCart");
+                });
+
+            modelBuilder.Entity("ContosoUniversity.Models.Tutorial", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Tutorial");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -179,6 +284,32 @@ namespace ContosoUniversity.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("ContosoUniversity.Models.CartItem", b =>
+                {
+                    b.HasOne("ContosoUniversity.Models.Tutorial", "Tutorial")
+                        .WithMany()
+                        .HasForeignKey("TutorialID");
+                });
+
+            modelBuilder.Entity("ContosoUniversity.Models.Order", b =>
+                {
+                    b.HasOne("ContosoUniversity.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("ContosoUniversity.Models.OrderDetail", b =>
+                {
+                    b.HasOne("ContosoUniversity.Models.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ContosoUniversity.Models.Tutorial", "Tutorial")
+                        .WithMany()
+                        .HasForeignKey("TutorialID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

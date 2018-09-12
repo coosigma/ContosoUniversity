@@ -14,7 +14,7 @@ namespace ContosoUniversity.Services
         public Task SendEmailAsync(string email, string subject, string message)
         {
             var mes = new MimeMessage();
-            mes.From.Add(new MailboxAddress("Bing", "liangb05@myunitec.ac.nz"));
+            mes.From.Add(new MailboxAddress("Test Account", "testuser01@unitectest.onmicrosoft.com"));
             mes.To.Add(new MailboxAddress("User", email));
             mes.Subject = subject;
 
@@ -36,7 +36,7 @@ namespace ContosoUniversity.Services
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
 
                 // Note: only needed if the SMTP server requires authentication
-                client.Authenticate("liangb05@myunitec.ac.nz", "12021985");
+                client.Authenticate("testuser01@unitectest.onmicrosoft.com", "testTOOL35");
 
                 client.Send(mes);
                 client.Disconnect(true);
