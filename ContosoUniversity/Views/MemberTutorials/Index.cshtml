@@ -6,9 +6,6 @@
 
 <h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -43,11 +40,11 @@
                 @Html.DisplayFor(modelItem => item.StartDate)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                <a asp-action="AddToCart" asp-controller="ShoppingCart" asp-route-id="@item.ID">
+                    <span class="glyphicon glyphicon-shopping-cart"></span>
+                    Add To Cart
+                </a>
             </td>
-
         </tr>
 }
     </tbody>

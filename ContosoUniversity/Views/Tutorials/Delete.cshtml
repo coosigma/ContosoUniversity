@@ -8,6 +8,7 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
+    <h3> @TempData["TutorialUsed"] </h3>
     <h4>Tutorial</h4>
     <hr />
     <dl class="dl-horizontal">
@@ -36,7 +37,7 @@
             @Html.DisplayFor(model => model.StartDate)
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
         <input type="submit" value="Delete" class="btn btn-default" /> |

@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ContosoUniversity.Data;
 using ContosoUniversity.Models;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Controllers
 {
+    [AllowAnonymous]
+    [Authorize(Roles = "Member")]
     public class ShoppingCartController : Controller
     {
         ApplicationDbContext _context;
@@ -36,7 +38,7 @@ namespace ContosoUniversity.Controllers
             var cart = ShoppingCart.GetCart(this.HttpContext);
             cart.AddToCart(addedTutorial, _context);
             // Go back to the main store page for more shopping
-            return RedirectToAction("Index", "Tutorials");
+            return RedirectToAction("Index", "MemberTutorials");
         }
 
         public ActionResult RemoveFromCart(int id)

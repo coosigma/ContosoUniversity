@@ -9,10 +9,11 @@ using ContosoUniversity.Data;
 using ContosoUniversity.Models;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Controllers
 {
+    [Authorize(Roles = "Admin,Member")]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,12 +26,14 @@ namespace ContosoUniversity.Controllers
         }
 
         // GET: Orders
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Orders.Include(i => i.User).AsNoTracking().ToListAsync());
         }
 
         // GET: Orders/Create
+        [Authorize(Roles = "Member")]
         public IActionResult Create()
         {
             return View();
@@ -41,6 +44,7 @@ namespace ContosoUniversity.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Member")]
         public async Task<IActionResult> Create([Bind("City,Country,FirstName,LastName,Phone,PostalCode,State")] Order order)
         {
             ApplicationUser user = await _userManager.GetUserAsync(User);
@@ -107,8 +111,9 @@ namespace ContosoUniversity.Controllers
             return View(order);
         }
 
-      
+
         // GET: Orders/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,6 +135,7 @@ namespace ContosoUniversity.Controllers
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var order = await _context.Orders.SingleOrDefaultAsync(m => m.OrderId == id);

@@ -11,23 +11,24 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ContosoUniversity.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class TutorialsController : Controller
+    [AllowAnonymous]
+    [Authorize(Roles = "Member")]
+    public class MemberTutorialsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public TutorialsController(ApplicationDbContext context)
+        public MemberTutorialsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Tutorials
+        // GET: MemberTutorials
         public async Task<IActionResult> Index()
         {
             return View(await _context.Tutorials.ToListAsync());
         }
 
-        // GET: Tutorials/Details/5
+        // GET: MemberTutorials/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,13 +46,13 @@ namespace ContosoUniversity.Controllers
             return View(tutorial);
         }
 
-        // GET: Tutorials/Create
+        // GET: MemberTutorials/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tutorials/Create
+        // POST: MemberTutorials/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -67,7 +68,7 @@ namespace ContosoUniversity.Controllers
             return View(tutorial);
         }
 
-        // GET: Tutorials/Edit/5
+        // GET: MemberTutorials/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,7 +84,7 @@ namespace ContosoUniversity.Controllers
             return View(tutorial);
         }
 
-        // POST: Tutorials/Edit/5
+        // POST: MemberTutorials/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -118,7 +119,7 @@ namespace ContosoUniversity.Controllers
             return View(tutorial);
         }
 
-        // GET: Tutorials/Delete/5
+        // GET: MemberTutorials/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,22 +137,14 @@ namespace ContosoUniversity.Controllers
             return View(tutorial);
         }
 
-        // POST: Tutorials/Delete/5
+        // POST: MemberTutorials/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var tutorial = await _context.Tutorials.SingleOrDefaultAsync(m => m.ID == id);
             _context.Tutorials.Remove(tutorial);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException s)
-            {
-                TempData["TutorialUsed"] = "The Tutorial being deleted has been used in previous orders. Delete those orders before trying again.";
-                return RedirectToAction("Delete");
-            }
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

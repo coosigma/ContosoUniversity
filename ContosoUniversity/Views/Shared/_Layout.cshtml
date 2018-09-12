@@ -36,12 +36,19 @@
                     <li><a asp-area="" asp-controller="Courses" asp-action="Index">Courses</a></li>
                     <li><a asp-area="" asp-controller="Instructors" asp-action="Index">Instructors</a></li>
                     <li><a asp-area="" asp-controller="Departments" asp-action="Index">Departments</a></li>
-                    <li><a asp-area="" asp-controller="Tutorials" asp-action="Index">Tutorials</a></li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                           <li><a asp-area="" asp-controller="Tutorials" asp-action="Index">Tutorials</a></li>}
+                    else
+                    {
+                           <li><a asp-area="" asp-controller="MemberTutorials" asp-action="Index">Tutorials</a></li>
+                     }
+
                     @if (User.IsInRole("Admin"))
     {
                 <li><a asp-area="" asp-controller="AdminApplicationUsers" asp-action="Index">Members</a></li>
+                <li><a asp-area="" asp-controller="Orders" asp-action="Index">Orders</a></li>
 }
-
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -51,7 +58,11 @@
         @RenderBody()
         <hr />
         <div>
-            @await Component.InvokeAsync("ShoppingCartViewModel")
+            @if (!User.IsInRole("Admin"))
+            {    
+                  @await Component.InvokeAsync("ShoppingCartViewModel")
+            }
+
         </div>
 
         <footer>
